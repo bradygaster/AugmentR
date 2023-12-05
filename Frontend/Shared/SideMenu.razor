@@ -1,0 +1,19 @@
+﻿@inject IConfiguration _configuration;
+
+<MudNavMenu Color="Color.Primary">
+
+    <MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Primary"
+                Icon="@(Icons.Material.Rounded.Train)">Home</MudNavLink>
+
+    <MudNavLink Href="loadfromurl" Match="NavLinkMatch.Prefix" IconColor="Color.Primary"
+                Icon="@(Icons.Material.Filled.Link)">Load from the web</MudNavLink>
+
+    <MudNavLink Href="history" Match="NavLinkMatch.Prefix" IconColor="Color.Primary"
+                Icon="@(Icons.Material.Filled.GraphicEq)"
+                Class="mr-2">System Status</MudNavLink>
+
+    <MudNavLink Icon="@(Icons.Custom.Brands.GitHub)" IconColor="Color.Primary"
+                Href="https://github.com/bradygaster/AugmentR/"
+                Class="mr-2" Target="_blank">AugmentR on GitHub</MudNavLink>
+    
+</MudNavMenu>

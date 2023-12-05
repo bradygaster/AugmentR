@@ -1,0 +1,81 @@
+﻿@inherits LayoutComponentBase
+@inject ISnackbar snackbar
+@inject LiveUpdateFrontEndMessenger messenger
+@implements IDisposable
+
+<MudThemeProvider Theme="theme" @bind-IsDarkMode="@isDarkMode" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudSpacer />
+        <MudSwitch @bind-Checked="@isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Dark/Light Mode" />
+        <MudSwitch @bind-Checked="@isStatusOn" Color="Color.Primary" Class="ma-4" T="bool" Label="Status On/Off" />
+        <TopMenu />
+    </MudAppBar>
+    <MudDrawer Elevation="1" Open="true" Variant="@DrawerVariant.Persistent">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">&nbsp;</MudText>
+        </MudDrawerHeader>
+        <SideMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="my-4 pt-8 pl-12">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private MudTheme theme = new();
+    private bool isDarkMode = true;
+    private bool isStatusOn = false;
+
+    protected void ShowStatus(Status status)
+    {
+        if (isStatusOn)
+        {
+            snackbar.Add(status.Summary, Severity.Normal, config =>
+            {
+                config.VisibleStateDuration = 1500;
+                config.HideTransitionDuration = 500;
+                config.ShowTransitionDuration = 500;
+                config.SnackbarVariant = Variant.Filled;
+                config.Icon = Icons.Material.Filled.Train;
+                config.ShowCloseIcon = false;
+            });
+            InvokeAsync(() => StateHasChanged());
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        messenger.OnStatusChanged += (status) => ShowStatus(status);
+
+        base.OnInitialized();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj != null && obj is MainLayout layout &&
+               isDarkMode == layout.isDarkMode;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    public void Dispose()
+    {
+        messenger.OnStatusChanged -= (status) => ShowStatus(status);
+    }
+}
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

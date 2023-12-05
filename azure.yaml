@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: AugmentR
+metadata:
+  template: AugmentR@0.0.1-beta
+
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: ./postprovision.ps1
+      interactive: true
+      continueOnError: true
+  preprovision:
+    windows:
+      shell: pwsh
+      run: azd env set MY_USER_ID ((az ad signed-in-user show --query id) -replace '"','')
+      interactive: true
+      continueOnError: true

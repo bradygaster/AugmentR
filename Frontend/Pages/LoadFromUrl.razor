@@ -1,0 +1,57 @@
+﻿@page "/loadfromurl"
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@inject QueueServiceClient queueServiceClient
+
+<PageTitle>Load information from a URL</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Augmentation from a URL</MudText>
+<MudText Class="mb-8">Use the form below to add a URL to the list of web pages in the AI's database.</MudText>
+
+<MudPaper Class="pa-4">
+    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+        <MudTextField T="string" Label="URL" @bind-Value="@_url" Required="true" RequiredError="URL is required!" Validation="@(new UrlAttribute() {ErrorMessage = "The URL is invalid!"})" />
+    </MudForm>
+</MudPaper>
+<MudPaper Class="pa-4 mt-4">
+    <MudStack Row="true">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(async ()=> { await Submit(); })">Submit</MudButton>
+        @if (_showProgress)
+        {
+            <MudProgressCircular @ref="_progress" Color="Color.Primary" Size="Size.Medium" Indeterminate="true" Class="ml-5" />
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    bool success;
+    string[] errors = { };
+    string? _url;
+    MudForm? form;
+    MudProgressCircular? _progress;
+    bool _showProgress = false;
+
+    public async Task Submit()
+    {
+        if (form != null)
+        {
+            await form.Validate();
+        }
+
+        if (success)
+        {
+            _showProgress = true;
+
+            if (!string.IsNullOrEmpty(_url))
+            {
+                var incomingQueueClient = queueServiceClient.GetQueueClient("incoming-urls");
+                await incomingQueueClient.CreateIfNotExistsAsync();
+                await incomingQueueClient.SendMessageAsync(JsonSerializer.Serialize(new IncomingUrl { Url = _url }));
+
+                _url = string.Empty;
+            }
+
+            _showProgress = false;
+        }
+    }
+}

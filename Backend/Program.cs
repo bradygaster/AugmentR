@@ -1,0 +1,36 @@
+var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
+builder.AddAzureQueueService("AzureQueues");
+builder.AddAzureBlobService("AzureBlobs");
+builder.AddRedis("pubsub");
+builder.Services.AddHttpClient<HistoryApiClient>(client => client.BaseAddress = new ("http://historyservice"));
+builder.Services.AddSingleton<SemanticKernelWrapper>();
+builder.Services.AddSingleton<UrlAugmentor>();
+builder.Services.AddSingleton<UrlListAugmentor>();
+builder.Services.AddSingleton<LiveUpdateService>();
+builder.Services.AddHostedService<AugmentationWorker>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+app.MapDefaultEndpoints();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.MapGet("/", () => Results.Ok("Backend is up"))
+   .WithName("IsUp")
+   .WithOpenApi();
+
+app.MapPost("/api/chat", async (List<ChatMessageProxy> chatHistory, SemanticKernelWrapper wrapper) =>
+{
+    var results = await wrapper.Chat(chatHistory.FromProxy());
+    return results.ToProxy();
+});
+
+app.Run();

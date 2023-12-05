@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<UserSecretsId>9b26631d-4b26-4e60-9053-f3817e485d8f</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.QDrant " Version="1.0.0-beta8" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta8" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+		<PackageReference Include="Aspire.Azure.Storage.Blobs" Version="8.0.0-preview.1.23557.2" />
+		<PackageReference Include="Aspire.Azure.Storage.Queues" Version="8.0.0-preview.1.23557.2" />
+		<PackageReference Include="Aspire.StackExchange.Redis" Version="8.0.0-preview.1.23557.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
+		<ProjectReference Include="..\Shared\Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Backend" />
+		<Using Include="Backend.Services" />
+		<Using Include="Backend.Workers" />
+		<Using Include="Backend.Augmentors" />
+		<Using Include="System.Text" />
+		<Using Include="System.Text.Json" />
+		<Using Include="Shared" />
+		<Using Include="StackExchange.Redis" /> 
+		<Using Include="Azure.Storage.Blobs" />
+		<Using Include="Azure.Storage.Queues" />
+		<Using Include="Azure.Storage.Queues.Models" />
+		<Using Include="System.Text.Json.Serialization" />
+		<Using Include="Microsoft.SemanticKernel.AI.ChatCompletion" />
+	</ItemGroup>
+
+</Project>
