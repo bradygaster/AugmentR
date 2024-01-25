@@ -7,6 +7,9 @@ using Microsoft.SemanticKernel.Text;
 using System.Net;
 using System.Text.RegularExpressions;
 
+using Azure.Identity;  
+using Azure.Security.KeyVault.Secrets;  
+
 namespace Backend.Services;
 
 public class SemanticKernelWrapper(IConfiguration configuration,
@@ -16,10 +19,11 @@ public class SemanticKernelWrapper(IConfiguration configuration,
     private IConfiguration _configuration = configuration;
     private bool _initialized = false;
     private string _collectionName = configuration["COLLECTION_NAME"] ?? "Default";
-    private string _gptDeploymentName = configuration["AZUREOPENAI_GPT_NAME"] ?? string.Empty;
-    private string _textEmbeddingDeploymentName = configuration["AZUREOPENAI_TEXT_EMBEDDING_NAME"] ?? string.Empty;
-    private string _openAiEndpoint = configuration["AZUREOPENAI_ENDPOINT"] ?? string.Empty;
-    private string _openAiKey = configuration["AZUREOPENAI_API_KEY"] ?? string.Empty;
+    private string _gptDeploymentName = configuration["AZURE_OPENAI_GPT_NAME"] ?? string.Empty;
+    private string _textEmbeddingDeploymentName = configuration["AZURE_OPENAI_TEXT_EMBEDDING_NAME"] ?? string.Empty;
+    private string _openAiEndpoint = configuration["AZURE_OPENAI_ENDPOINT"] ?? string.Empty;
+    private string _openAiKey = configuration["AZURE_OPENAI_KEY_NAME"] ?? string.Empty;
+    private string _keyVaultEndpoint = configuration["AZURE_KEY_VAULT_ENDPOINT"] ?? string.Empty;
     private ISemanticTextMemory? _semanticTextMemory = null;
     private IKernel? SemanticKernel = null;
     private IChatCompletion? _chatCompletion = null;
@@ -45,7 +49,12 @@ public class SemanticKernelWrapper(IConfiguration configuration,
         }
         if (string.IsNullOrEmpty(_openAiKey))
         {
-            _logger.LogError("The app needs to be configured with an Azure OpenAI key.");
+            _logger.LogError("The app needs to be configured with an Azure OpenAI key secret name.");
+            return false;
+        }
+        if (string.IsNullOrEmpty(_keyVaultEndpoint))
+        {
+            _logger.LogError("The app needs to be configured with an Azure keyvault endpoint.");
             return false;
         }
 
@@ -62,14 +71,18 @@ public class SemanticKernelWrapper(IConfiguration configuration,
             {
                 _logger.LogInformation("Semantic Kernel starting.");
 
+                SecretClient client = new SecretClient(new Uri(_keyVaultEndpoint), new DefaultAzureCredential());
+                var openaikey = await client.GetSecretAsync(_openAiKey);
+                var Key = openaikey.Value.Value;
+
                 SemanticKernel = new KernelBuilder()
                     .WithLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
-                    .WithAzureOpenAIChatCompletionService(_gptDeploymentName, _openAiEndpoint, _openAiKey)
+                    .WithAzureOpenAIChatCompletionService(_gptDeploymentName, _openAiEndpoint, Key)
                     .Build();
 
                 _semanticTextMemory = new MemoryBuilder()
                     .WithLoggerFactory(SemanticKernel.LoggerFactory)
-                    .WithAzureOpenAITextEmbeddingGenerationService(_textEmbeddingDeploymentName, _openAiEndpoint, _openAiKey)
+                    .WithAzureOpenAITextEmbeddingGenerationService(_textEmbeddingDeploymentName, _openAiEndpoint, Key)
                     .WithMemoryStore(new QdrantMemoryStore(_configuration["QDRANT_ENDPOINT"] ?? "https://qdrant:6333", 1536, SemanticKernel.LoggerFactory))
                     .Build();
 
