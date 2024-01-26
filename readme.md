@@ -23,24 +23,18 @@ The process of getting the sample up and running locally is somewhat simple, pro
 
 > Learn more about these requirements in the [.NET Aspire deployment documentation](https://learn.microsoft.com/dotnet/aspire/deployment/overview). 
 
-Once you've installed the Aspire workload and Visual Studio tools, and the Azure Developer CLI, and logged into your Microsoft account from both Visual Studio and the Azure Developer CLI with access to an Azure subscription, do these three steps to get the app set up locally: 
+Once you've installed the Aspire workload and Visual Studio tools, and the [Azure Developer CLI](https://aka.ms/azd-install), and logged into your Microsoft account from both Visual Studio and the Azure Developer CLI with access to an Azure subscription, do these three steps to get the app set up locally: 
 
 > At this time the repository's setup requires PowerShell and Windows, but I'll add non-Windows support via `bash` very soon.
 
-1. Clone this repository to your local development machine. 
+1. CD into an Empty Directory
+1. Initialize the Project
 
     ```
-    git clone https://github.com/bradygaster/AugmentR.git
+    azd init -t bradygaster/AugmentR
     ```
 
     Or, open Visual Studio and start by cloning a repository and paste in that repo URL. 
-
-1. `cd` into the cloned directory from a terminal window initialize the Azure Developer CLI environment: 
-
-    ```
-    cd augmentr
-    azd init
-    ```
 
 1. Provision the Azure resources you'll need to run the app: 
 

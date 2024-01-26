@@ -1,31 +1,19 @@
-$lines=((azd env get-values) -split "`n")
-
-cd .\Backend
-
-dotnet user-secrets clear 
-
-foreach ($line in $lines) {
-    $name, $value = $line -split '='
-    $value = ($value -replace '"', '')
-    $name = ($name -replace '__', ':')
-    if($value -ne '') {
-        $command = "dotnet user-secrets set $name $value"
-        Invoke-Expression $command
+function Set-DotnetUserSecrets {
+    param ($path, $lines)
+    Push-Location
+    cd $path
+    dotnet user-secrets clear
+    foreach ($line in $lines) {
+        $name, $value = $line -split '='
+        $value = $value -replace '"', ''
+        $name = $name -replace '__', ':'
+        if ($value -ne '') {
+            dotnet user-secrets set $name $value
+        }
     }
+    Pop-Location
 }
 
-cd ..\Frontend
-
-dotnet user-secrets clear 
-
-foreach ($line in $lines) {
-    $name, $value = $line -split '='
-    $value = ($value -replace '"', '')
-    $name = ($name -replace '__', ':')
-    if($value -ne '') {
-        $command = "dotnet user-secrets set $name $value"
-        Invoke-Expression $command
-    }
-}
-
-cd ..
+$lines = (azd env get-values) -split "`n"
+Set-DotnetUserSecrets -path ".\Backend" -lines $lines
+Set-DotnetUserSecrets -path ".\Frontend" -lines $lines

@@ -51,7 +51,7 @@ var openaiDeployment = [
     model: {
       format: 'OpenAI'
       name: 'gpt-35-turbo'
-      version: '0301'
+      version: '0613'
     }
   }
   {
