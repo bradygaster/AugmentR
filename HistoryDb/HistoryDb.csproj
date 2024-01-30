@@ -9,13 +9,13 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-preview.1.23557.2" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-preview.2.23619.3" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<Version>8.0.0</Version>
+			<Version>8.0.1</Version>
 		</PackageReference>
 	</ItemGroup>
 

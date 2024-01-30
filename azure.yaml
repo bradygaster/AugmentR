@@ -11,9 +11,3 @@ hooks:
       run: ./postprovision.ps1
       interactive: true
       continueOnError: true
-  preprovision:
-    windows:
-      shell: pwsh
-      run: azd env set MY_USER_ID ((az ad signed-in-user show --query id) -replace '"','')
-      interactive: true
-      continueOnError: true

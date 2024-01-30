@@ -8,8 +8,8 @@
       "location": {
         "value": "${AZURE_LOCATION}"
       },
-      "myUserId": {
-        "value": "${MY_USER_ID}"
+      "principalId": {
+        "value": "${AZURE_PRINCIPAL_ID}"
       },
       "createContainerApps": {
         "value": false

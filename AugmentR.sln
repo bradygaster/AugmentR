@@ -16,6 +16,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryDb", "HistoryDb\Hist
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryService", "HistoryService\HistoryService.csproj", "{9529A25F-E1F4-479D-A222-9F3EE8E7B438}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB7744FA-3043-4823-A084-855CC01A8FB3}"
+	ProjectSection(SolutionItems) = preProject
+		azure.yaml = azure.yaml
+		postprovision.ps1 = postprovision.ps1
+		readme.md = readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
