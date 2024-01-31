@@ -1,39 +1,66 @@
 {
   "resources": {
-    "redis": {
-      "type": "redis.v0"
+    "pubsub": {
+      "type": "container.v0",
+      "image": "redis:latest",
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "containerPort": 6379
+        }
+      },
+      "connectionString": "{pubsub.bindings.tcp.host}:{pubsub.bindings.tcp.port}"
+    },
+    "qdrant": {
+      "type": "container.v0",
+      "image": "qdrant/qdrant:latest",
+      "bindings": {
+        "qdrant": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "containerPort": 6333
+        }
+      }
     },
     "postgres": {
-      "type": "postgres.server.v0"
+      "type": "container.v0",
+      "image": "postgres:latest",
+      "env": {
+        "POSTGRES_HOST_AUTH_METHOD": "scram-sha-256",
+        "POSTGRES_INITDB_ARGS": "--auth-host=scram-sha-256 --auth-local=scram-sha-256",
+        "POSTGRES_PASSWORD": "{postgres.inputs.password}"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "containerPort": 5432
+        }
+      },
+      "connectionString": "Host={postgres.bindings.tcp.host};Port={postgres.bindings.tcp.port};Username=postgres;Password={postgres.inputs.password};",
+      "inputs": {
+        "password": {
+          "type": "string",
+          "secret": true,
+          "default": {
+            "generate": {
+              "minLength": 10
+            }
+          }
+        }
+      }
     },
     "historydb": {
       "type": "postgres.database.v0",
       "parent": "postgres"
     },
-    "backend": {
-      "type": "project.v0",
-      "path": "..\\Backend\\Backend.csproj",
-      "env": {
-        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
-        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
-        "ConnectionStrings__redis": "{redis.connectionString}"
-      },
-      "bindings": {
-        "http": {
-          "scheme": "http",
-          "protocol": "tcp",
-          "transport": "http"
-        },
-        "https": {
-          "scheme": "https",
-          "protocol": "tcp",
-          "transport": "http"
-        }
-      }
-    },
     "historyservice": {
       "type": "project.v0",
-      "path": "..\\HistoryService\\HistoryService.csproj",
+      "path": "../HistoryService/HistoryService.csproj",
       "env": {
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
@@ -54,7 +81,7 @@
     },
     "historydbapp": {
       "type": "project.v0",
-      "path": "..\\HistoryDb\\HistoryDb.csproj",
+      "path": "../HistoryDb/HistoryDb.csproj",
       "env": {
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
@@ -75,12 +102,51 @@
         }
       }
     },
-    "frontend": {
+    "storage": {
+      "type": "azure.storage.v0"
+    },
+    "AzureBlobs": {
+      "type": "azure.storage.blob.v0",
+      "parent": "storage"
+    },
+    "AzureQueues": {
+      "type": "azure.storage.queue.v0",
+      "parent": "storage"
+    },
+    "backend": {
       "type": "project.v0",
-      "path": "..\\Frontend\\Frontend.csproj",
+      "path": "../Backend/Backend.csproj",
       "env": {
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
         "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "QDRANT_ENDPOINT": "{qdrant.bindings.qdrant.url}",
+        "ConnectionStrings__pubsub": "{pubsub.connectionString}",
+        "ConnectionStrings__AzureBlobs": "{AzureBlobs.connectionString}",
+        "ConnectionStrings__AzureQueues": "{AzureQueues.connectionString}",
+        "services__historyservice__0": "{historyservice.bindings.http.url}",
+        "services__historyservice__1": "{historyservice.bindings.https.url}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http"
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http"
+        }
+      }
+    },
+    "frontend": {
+      "type": "project.v0",
+      "path": "../Frontend/Frontend.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "ConnectionStrings__pubsub": "{pubsub.connectionString}",
+        "ConnectionStrings__AzureQueues": "{AzureQueues.connectionString}",
         "services__historyservice__0": "{historyservice.bindings.http.url}",
         "services__historyservice__1": "{historyservice.bindings.https.url}",
         "services__backend__0": "{backend.bindings.http.url}",

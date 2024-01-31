@@ -21,17 +21,30 @@ _ =           // a .net app that will initialize the history database
            .WithReference(histsvc)
            .WithReference(histdb);
 
+var storage = // an azure storage account
+    builder.AddAzureStorage("storage")
+               .UseEmulator(); // use azurite for local development
+
+var blobs =   // a blob container in the storage account
+    storage.AddBlobs("AzureBlobs");
+
+var queues =  // a queue in the storage account
+    storage.AddQueues("AzureQueues");
+
 var backend = // the main .net app that will perform augmentation and vector search
     builder.AddProject<Projects.Backend>("backend")
            .WithEnvironment("QDRANT_ENDPOINT", qdrant.GetEndpoint("qdrant"))
            .WithReference(histsvc)
-           .WithReference(pubsub);
+           .WithReference(pubsub)
+           .WithReference(blobs)
+           .WithReference(queues);
 
 _ =           // a blazor server app that will provide a web ui for the app
     builder.AddProject<Projects.Frontend>("frontend")
            .WithReference(histsvc)
            .WithReference(backend)
-           .WithReference(pubsub);
+           .WithReference(pubsub)
+           .WithReference(queues);
 
 builder.Build().Run();
 
