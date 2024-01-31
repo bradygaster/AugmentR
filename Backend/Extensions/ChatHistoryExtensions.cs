@@ -1,4 +1,6 @@
-﻿namespace Microsoft.SemanticKernel.AI.ChatCompletion;
+﻿using Microsoft.SemanticKernel.ChatCompletion;
+
+namespace Microsoft.SemanticKernel.AI.ChatCompletion;
 
 public static class ChatHistoryExtensions
 {
@@ -7,7 +9,7 @@ public static class ChatHistoryExtensions
         return chathistory.Select(m => new ChatMessageProxy
         {
             IsUserMessage = m.Role == AuthorRole.User,
-            Content = m.Content
+            Content = m.Content ?? string.Empty,
         }).ToList();
     }
 
