@@ -1,16 +1,18 @@
 ﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
-using Microsoft.SemanticKernel.Connectors.Memory.Qdrant;
 using Microsoft.SemanticKernel.Memory;
-using Microsoft.SemanticKernel.Plugins.Memory;
 using Microsoft.SemanticKernel.Text;
 using System.Net;
 using System.Text.RegularExpressions;
 
 using Azure.Identity;  
-using Azure.Security.KeyVault.Secrets;  
+using Azure.Security.KeyVault.Secrets;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.Connectors.Qdrant;
+using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace Backend.Services;
+
+#pragma warning disable SKEXP0003, SKEXP0011, SKEXP0026, SKEXP0055 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 public class SemanticKernelWrapper(IConfiguration configuration,
         ILogger<SemanticKernelWrapper> logger)
@@ -25,8 +27,8 @@ public class SemanticKernelWrapper(IConfiguration configuration,
     private string _openAiKey = configuration["AZURE_OPENAI_KEY_NAME"] ?? string.Empty;
     private string _keyVaultEndpoint = configuration["AZURE_KEY_VAULT_ENDPOINT"] ?? string.Empty;
     private ISemanticTextMemory? _semanticTextMemory = null;
-    private IKernel? SemanticKernel = null;
-    private IChatCompletion? _chatCompletion = null;
+    private Kernel? SemanticKernel = null;
+    private IChatCompletionService? _chatCompletion = null;
 
     private bool IsConfigured()
     {
@@ -75,14 +77,14 @@ public class SemanticKernelWrapper(IConfiguration configuration,
                 var openaikey = await client.GetSecretAsync(_openAiKey);
                 var Key = openaikey.Value.Value;
 
-                SemanticKernel = new KernelBuilder()
-                    .WithLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
-                    .WithAzureOpenAIChatCompletionService(_gptDeploymentName, _openAiEndpoint, Key)
-                    .Build();
+                IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
+                    .AddAzureOpenAIChatCompletion(_gptDeploymentName, _openAiEndpoint, Key);
+                kernelBuilder.Services.AddLogging(b => b.AddConsole());
+                SemanticKernel = kernelBuilder.Build();
 
                 _semanticTextMemory = new MemoryBuilder()
                     .WithLoggerFactory(SemanticKernel.LoggerFactory)
-                    .WithAzureOpenAITextEmbeddingGenerationService(_textEmbeddingDeploymentName, _openAiEndpoint, Key)
+                    .WithAzureOpenAITextEmbeddingGeneration(_textEmbeddingDeploymentName, _openAiEndpoint, Key)
                     .WithMemoryStore(new QdrantMemoryStore(_configuration["QDRANT_ENDPOINT"] ?? "https://qdrant:6333", 1536, SemanticKernel.LoggerFactory))
                     .Build();
 
@@ -91,7 +93,7 @@ public class SemanticKernelWrapper(IConfiguration configuration,
                 _logger.LogInformation("Semantic Kernel started.");
 
                 _chatCompletion = _chatCompletion ??
-                    SemanticKernel.GetService<IChatCompletion>();
+                    SemanticKernel.GetRequiredService<IChatCompletionService>();
 
                 _logger.LogInformation("Chat completion engine created.");
 
@@ -119,7 +121,7 @@ public class SemanticKernelWrapper(IConfiguration configuration,
         }
 
         var stringBuilder = new StringBuilder();
-        await foreach (var result in SearchAsync(chatHistory.Last().Content))
+        await foreach (var result in SearchAsync(chatHistory.Last().Content ?? string.Empty))
         {
             stringBuilder.AppendLine(result.Metadata.Text);
         }
@@ -141,11 +143,9 @@ public class SemanticKernelWrapper(IConfiguration configuration,
         }
         else
         {
-            var messages = _chatCompletion.GenerateMessageStreamAsync(chatHistory);
-
-            await foreach (string message in messages)
+            await foreach (var message in _chatCompletion.GetStreamingChatMessageContentsAsync(chatHistory))
             {
-                stringBuilder.Append(message);
+                stringBuilder.Append(message.Content);
             }
 
             chatHistory.AddAssistantMessage(stringBuilder.ToString());
