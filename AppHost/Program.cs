@@ -2,14 +2,14 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var pubsub  = // a redis container the app will use for simple messaging to the frontend
-    builder.AddRedisContainer("pubsub");
+    builder.AddRedis("pubsub");
 
 var qdrant  = // the qdrant container the app will use for vector search
     builder.AddContainer("qdrant", "qdrant/qdrant")
            .WithServiceBinding(containerPort: 6333, name: "qdrant", scheme: "http");
 
 var histdb  = // a postgres container the app will use for history storage
-    builder.AddPostgresContainer("postgres")
+    builder.AddPostgres("postgres")
            .AddDatabase("historydb");
 
 var histsvc = // a minimal api app that will provide get/post access to the history database
