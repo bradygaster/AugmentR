@@ -42,11 +42,18 @@ Once you've installed the Aspire workload and Visual Studio tools, and the [Azur
     azd provision
     ```
 
-After about 2 minutes, the Azure Developer CLI will complete the process of provisioning your resources. At this point, it will copy down a series of configuration values and set them as secrets in your app's local configuration using `dotnet user-secrets`. This way, you won't be persisting any configuration in any files, which might accidentally be committed as you experiment with the app. 
+    Within 5 minutes, the Azure Developer CLI will complete the process of provisioning your resources. At this point, it will copy down a series of configuration values and set them as secrets in your app's local configuration using `dotnet user-secrets`. This way, you won't be persisting any configuration in any files, which might accidentally be committed as you experiment with the app. 
 
-F5 the app from within Visual Studio, and it should open up in the Aspire Dashboard. You'll probably see a few errors as the services connect to Azure Queue and Blob Storage at first as things get authenticated. Once the Aspire Dashboard opens, open the `Frontend` project URL in your browser. 
+    F5 the app from within Visual Studio, and it should open up in the Aspire Dashboard. You'll probably see a few errors as the services connect to Azure Queue and Blob Storage at first as things get authenticated. Once the Aspire Dashboard opens, open the `Frontend` project URL in your browser. 
 
-Once open, you can use AugmentR like any other chat-based LLM system, but, when you want to augment the model with additional, updated information, just load in a public URL and let AugmentR do the work for you. 
+1. Deploy the app to Azure:
+
+    ```
+    azd deploy
+    ```
+
+    Once the app deploys, you can use AugmentR like any other chat-based LLM system, but, when you want to augment the model with additional, updated information, just load in a public URL and let AugmentR do the work for you. 
+
 
 ## Contributions
 
