@@ -8,7 +8,7 @@ function Set-DotnetUserSecrets {
         $value = $value -replace '"', ''
         $name = $name -replace '__', ':'
         if ($value -ne '') {
-            dotnet user-secrets set $name $value
+            dotnet user-secrets set $name $value | Out-Null
         }
     }
     Pop-Location
