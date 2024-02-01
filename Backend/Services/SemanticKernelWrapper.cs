@@ -1,14 +1,13 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.Connectors.Qdrant;
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.Text;
 using System.Net;
 using System.Text.RegularExpressions;
-
-using Azure.Identity;  
-using Azure.Security.KeyVault.Secrets;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Microsoft.SemanticKernel.Connectors.Qdrant;
-using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace Backend.Services;
 

@@ -10,9 +10,7 @@
       },
       "principalId": {
         "value": "${AZURE_PRINCIPAL_ID}"
-      },
-      "createContainerApps": {
-        "value": false
       }
     }
-}
+  }
+  

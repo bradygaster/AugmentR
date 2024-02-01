@@ -2,7 +2,13 @@
 
 name: AugmentR
 metadata:
-  template: AugmentR@0.0.1-beta
+  template: AugmentR@1.0.0-beta
+
+services:  
+  app:
+    language: dotnet
+    project: .\AppHost\AppHost.csproj
+    host: containerapp
 
 hooks:
   postprovision:
