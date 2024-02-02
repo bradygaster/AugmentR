@@ -165,68 +165,65 @@ var strgQueRole = '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
 
 // storage role for blobs
 module blobRoleAssignment 'core/security/role.bicep' = {
-  name: 'blob-role-app'
-  params: {
-    roleDefinitionId: strgBlbRole
-    principalType: 'ServicePrincipal'
-    principalId: managedIdentity.properties.principalId
-  }
+    name: 'blob-role-app'
+    params: {
+        roleDefinitionId: strgBlbRole
+        principalType: 'ServicePrincipal'
+        principalId: managedIdentity.properties.principalId
+    }
 }
 
 module blobRoleAssignmentForMe 'core/security/role.bicep' = {
-  name: 'blob-role-user'
-  params: {
-    roleDefinitionId: strgBlbRole
-    principalType: 'User'
-    principalId: principalId
-  }
+    name: 'blob-role-user'
+    params: {
+        roleDefinitionId: strgBlbRole
+        principalType: 'User'
+        principalId: principalId
+    }
 }
 
 // storage role for queues
 module queueRoleAssignment 'core/security/role.bicep' = {
-  name: 'queue-role-app'
-  params: {
-    roleDefinitionId: strgQueRole
-    principalType: 'ServicePrincipal'
-    principalId: managedIdentity.properties.principalId
-  }
+    name: 'queue-role-app'
+    params: {
+        roleDefinitionId: strgQueRole
+        principalType: 'ServicePrincipal'
+        principalId: managedIdentity.properties.principalId
+    }
 }
 
 module queueRoleAssignmentForMe 'core/security/role.bicep' = {
-  name: 'queue-role-user'
-  params: {
-    roleDefinitionId: strgQueRole
-    principalType: 'User'
-    principalId: principalId
-  }
+    name: 'queue-role-user'
+    params: {
+        roleDefinitionId: strgQueRole
+        principalType: 'User'
+        principalId: principalId
+    }
 }
 
 // give the container apps access to the keyvault
 module keyvaultRole 'core/security/keyvault-access.bicep' = {
-  name: 'keyvaultRole'
-  params: {
-    keyVaultName: keyvaultName
-    principalId: managedIdentity.properties.principalId
-  }
+    name: 'keyvaultRole'
+    params: {
+        keyVaultName: keyvaultName
+        principalId: managedIdentity.properties.principalId
+    }
 }
 
 // create secret to store openai api key
 module openAIKey 'core/security/keyvault-secret.bicep' = {
-  name: 'openai-key'
-  params: {
-    name: openAIKeyName
-    keyVaultName: keyvaultName
-    secretValue: listKeys(resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.CognitiveServices/accounts', openAIName), '2023-05-01').key1
-  }
+    name: 'openai-key'
+    params: {
+        name: openAIKeyName
+        keyVaultName: keyvaultName
+        secretValue: listKeys(resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.CognitiveServices/accounts', openAIName), '2023-05-01').key1
+    }
 }
 
 output MANAGED_IDENTITY_CLIENT_ID string = managedIdentity.properties.clientId
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.properties.loginServer
 output AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID string = managedIdentity.id
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = containerAppEnvironment.id
-output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = containerAppEnvironment.name
 output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = containerAppEnvironment.properties.defaultDomain
 output SERVICE_BINDING_AZUREBLOBS_ENDPOINT string = storage.properties.primaryEndpoints.blob
-output ConnectionStrings__AzureQueues string = storage.properties.primaryEndpoints.queue
-output ConnectionStrings__AzureBlobs string = storage.properties.primaryEndpoints.blob
-output AZURE_CONTAINER_REGISTRY string = containerRegistry.properties.loginServer
+output SERVICE_BINDING_AZUREQUEUES_ENDPOINT string = storage.properties.primaryEndpoints.queue

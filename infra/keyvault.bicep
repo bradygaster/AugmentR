@@ -11,14 +11,14 @@ var resourceToken = uniqueString(resourceGroup().id)
 
 // create a keyvault to store openai secrets
 module keyvault 'core/security/keyvault.bicep' = {
-  name: 'kv${resourceToken}'
-  scope: resourceGroup()
-  params: {
     name: 'kv${resourceToken}'
-    location: location
-    tags: tags
-    principalId: principalId
-  }
+    scope: resourceGroup()
+    params: {
+        name: 'kv${resourceToken}'
+        location: location
+        tags: tags
+        principalId: principalId
+    }
 }
 
 output AZURE_KEY_VAULT_ENDPOINT string = keyvault.outputs.endpoint

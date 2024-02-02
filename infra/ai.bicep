@@ -49,8 +49,8 @@ module openAi './core/ai/cognitiveservices.bicep' = {
   }
 }
 
-output AZURE_OPENAI_NAME string = 'ai${resourceToken}'
-output AZURE_OPENAI_KEY_NAME string = openAIKeyName
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output AZURE_OPENAI_GPT_NAME string = 'gpt${resourceToken}'
+output AZURE_OPENAI_KEY_NAME string = openAIKeyName
+output AZURE_OPENAI_NAME string = 'ai${resourceToken}'
 output AZURE_OPENAI_TEXT_EMBEDDING_NAME string = 'text${resourceToken}'
