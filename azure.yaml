@@ -1,6 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
-
-name: 02-end
+name: AugmentR
+metadata:
+  template: AugmentR@1.0.0-beta
+  
 services:  
   app:
     language: dotnet
