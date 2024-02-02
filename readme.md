@@ -38,7 +38,7 @@ First up, you'll use `azd init` to initialize the local environment for use with
 
     name: AugmentR
     services:  
-    app:
+      app:
         language: dotnet
         project: .\AppHost\AppHost.csproj
         host: containerapp`
@@ -97,10 +97,10 @@ Inside of each of the C# project folders, a new `manifests` folder has been gene
     configuration:
         activeRevisionsMode: single
         ingress:
-        external: false
-        targetPort: 8080
-        transport: http
-        allowInsecure: true
+          external: false
+          targetPort: 8080
+          transport: http
+          allowInsecure: true
         registries:
         - server: {{ .Env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
         identity: {{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
@@ -110,23 +110,23 @@ Inside of each of the C# project folders, a new `manifests` folder has been gene
         name: backend
         env:
         - name: AZURE_CLIENT_ID
-            value: {{ .Env.MANAGED_IDENTITY_CLIENT_ID }}
+          value: {{ .Env.MANAGED_IDENTITY_CLIENT_ID }}
         - name: ConnectionStrings__AzureBlobs
-            value: {{ .Env.SERVICE_BINDING_AZUREBLOBS_ENDPOINT }}
+          value: {{ .Env.SERVICE_BINDING_AZUREBLOBS_ENDPOINT }}
         - name: ConnectionStrings__AzureQueues
-            value: {{ .Env.SERVICE_BINDING_AZUREQUEUES_ENDPOINT }}
+          value: {{ .Env.SERVICE_BINDING_AZUREQUEUES_ENDPOINT }}
         - name: ConnectionStrings__pubsub
-            value: {{ connectionString "pubsub" }}
+          value: {{ connectionString "pubsub" }}
         - name: OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES
-            value: "true"
+          value: "true"
         - name: OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES
-            value: "true"
+          value: "true"
         - name: QDRANT_ENDPOINT
-            value: http://qdrant.internal.{{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
+          value: http://qdrant.internal.{{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
         - name: services__historyservice__0
-            value: http://historyservice.internal.{{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
+          value: http://historyservice.internal.{{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
         - name: services__historyservice__1
-            value: https://historyservice.internal.{{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
+          value: https://historyservice.internal.{{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
         scale:
             minReplicas: 1
     tags:
@@ -735,9 +735,9 @@ You're going to need to debug the app **locally** on your development machine, b
     name: 02-end
     services:  
     app:
-        language: dotnet
-        project: .\AppHost\AppHost.csproj
-        host: containerapp
+      language: dotnet
+      project: .\AppHost\AppHost.csproj
+       host: containerapp
     ```
 
 1. Paste the code you just copied at the end of the file, so you'll copy the settings into your secrets when provision succeeds: 
@@ -748,17 +748,17 @@ You're going to need to debug the app **locally** on your development machine, b
     name: AugmentR
     services:  
     app:
-        language: dotnet
-        project: .\AppHost\AppHost.csproj
-        host: containerapp
+      language: dotnet
+      project: .\AppHost\AppHost.csproj
+      host: containerapp
 
     hooks:
     postprovision:
-        windows:
+      windows:
         shell: pwsh
-        run: ./postprovision.ps1
-        interactive: true
-        continueOnError: true
+          run: ./postprovision.ps1
+          interactive: true
+          continueOnError: true
     ```
 
 Now, you're ready to run `azd provision` to create the resources and configure your local development environment to run the code and customize it should you have any ideas you'd like to contribute. 
