@@ -41,7 +41,7 @@ First up, you'll use `azd init` to initialize the local environment for use with
       app:
         language: dotnet
         project: .\AppHost\AppHost.csproj
-        host: containerapp`
+        host: containerapp
     ```
 
     You'll also see files in a `.azure` folder, separated into directories. Each directory represents an individual AZD environment, and each environment folder contains an independent `.env` file into which AZD will generate environment variables. 
