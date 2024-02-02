@@ -36,7 +36,7 @@ First up, you'll use `azd init` to initialize the local environment for use with
     ```yaml
     # yaml-language-server: $schema=https://raw.gith`ubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-    name: 02-end
+    name: AugmentR
     services:  
     app:
         language: dotnet
@@ -745,7 +745,7 @@ You're going to need to debug the app **locally** on your development machine, b
     ```yaml
     # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-    name: 02-end
+    name: AugmentR
     services:  
     app:
         language: dotnet
