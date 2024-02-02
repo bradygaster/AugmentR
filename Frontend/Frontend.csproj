@@ -10,9 +10,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="MudBlazor" Version="6.14.0" />
-		<PackageReference Include="Aspire.Azure.Storage.Blobs" Version="8.0.0-preview.2.23619.3" />
-		<PackageReference Include="Aspire.Azure.Storage.Queues" Version="8.0.0-preview.2.23619.3" />
-		<PackageReference Include="Aspire.StackExchange.Redis" Version="8.0.0-preview.2.23619.3" />
+		<PackageReference Include="Aspire.Azure.Storage.Blobs" Version="8.0.0-preview.3.24076.8" />
+		<PackageReference Include="Aspire.Azure.Storage.Queues" Version="8.0.0-preview.3.24076.8" />
+		<PackageReference Include="Aspire.StackExchange.Redis" Version="8.0.0-preview.3.24076.8" />
 		<PackageReference Include="Markdig" Version="0.34.0" />
 		<PackageReference Include="Markdown.ColorCode" Version="2.1.0" />
 	</ItemGroup>
