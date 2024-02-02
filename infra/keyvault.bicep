@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Tags that will be applied to all resources')
 param tags object = {}
 
-@description('String representing the ID of the logged-in user. Get this using ')
+@description('String representing the ID of the logged-in user ')
 param principalId string = ''
 
 var resourceToken = uniqueString(resourceGroup().id)
