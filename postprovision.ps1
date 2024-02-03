@@ -2,6 +2,7 @@ function Set-DotnetUserSecrets {
     param ($path, $lines)
     Push-Location
     cd $path
+    dotnet user-secrets init
     dotnet user-secrets clear
     foreach ($line in $lines) {
         $name, $value = $line -split '='
