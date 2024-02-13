@@ -2,8 +2,8 @@
 name: AugmentR
 metadata:
   template: AugmentR@1.0.0-beta
-  
-services:  
+
+services:
   app:
     language: dotnet
     project: .\AppHost\AppHost.csproj
@@ -14,5 +14,10 @@ hooks:
     windows:
       shell: pwsh
       run: ./postprovision.ps1
+      interactive: true
+      continueOnError: true
+    posix:
+      shell: sh
+      run: ./postprovision.sh
       interactive: true
       continueOnError: true
