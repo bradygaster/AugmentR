@@ -25,10 +25,9 @@ public class UrlAugmentor(SemanticKernelWrapper semanticKernelWrapper,
                 if (incomingUrl != null)
                 {
                     // try to create the uri
-                    Uri? parsedUri = null;
 
                     // if the uri is legit, save it to the model
-                    if (Uri.TryCreate(incomingUrl.Url, UriKind.Absolute, out parsedUri))
+                    if (Uri.TryCreate(incomingUrl.Url, UriKind.Absolute, out Uri? parsedUri))
                     {
                         await historyApiClient.SaveHistoryItem(CreateHistoricalItem("None", incomingUrl.Url, $"Augmenting model with Url: {incomingUrl.Url}"));
 
@@ -52,7 +51,7 @@ public class UrlAugmentor(SemanticKernelWrapper semanticKernelWrapper,
     }
 
     static HistoricalItem CreateHistoricalItem(string contentId, string url, string description)
-        => new HistoricalItem
+        => new()
         {
             ContentId = contentId,
             SourceUrl = url,

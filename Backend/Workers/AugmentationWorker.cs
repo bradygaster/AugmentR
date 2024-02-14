@@ -1,24 +1,18 @@
 ﻿namespace Backend.Workers;
 
-public class AugmentationWorker(SemanticKernelWrapper semanticKernelClient,
-        ILogger<AugmentationWorker> logger,
-        IConfiguration configuration,
-        UrlAugmentor urlAugmentor,
-        UrlListAugmentor urlListAugmentor,
-        LiveUpdateService liveUpdateService) : BackgroundService
+public class AugmentationWorker(
+    SemanticKernelWrapper semanticKernelClient,
+    ILogger<AugmentationWorker> logger,
+    IConfiguration configuration,
+    UrlAugmentor urlAugmentor,
+    UrlListAugmentor urlListAugmentor,
+    LiveUpdateService liveUpdateService) : BackgroundService
 {
-    private SemanticKernelWrapper semanticKernelClient = semanticKernelClient;
-    private ILogger<AugmentationWorker> logger = logger;
-    private readonly IConfiguration configuration = configuration;
-    private readonly UrlAugmentor urlAugmentor = urlAugmentor;
-    private readonly UrlListAugmentor urlListAugmentor = urlListAugmentor;
-    private readonly LiveUpdateService liveUpdateService = liveUpdateService;
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(5000);
+            await Task.Delay(5_000, stoppingToken);
 
             try
             {

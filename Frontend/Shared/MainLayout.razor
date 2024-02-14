@@ -28,50 +28,50 @@
 </MudLayout>
 
 @code {
-    private MudTheme theme = new();
-    private bool isDarkMode = true;
-    private bool isStatusOn = false;
+private MudTheme theme = new();
+private bool isDarkMode = true;
+private bool isStatusOn = false;
 
-    protected void ShowStatus(Status status)
+protected void ShowStatus(Status status)
+{
+    if (isStatusOn)
     {
-        if (isStatusOn)
+        snackbar.Add(status.Summary, Severity.Normal, config =>
         {
-            snackbar.Add(status.Summary, Severity.Normal, config =>
-            {
-                config.VisibleStateDuration = 1500;
-                config.HideTransitionDuration = 500;
-                config.ShowTransitionDuration = 500;
-                config.SnackbarVariant = Variant.Filled;
-                config.Icon = Icons.Material.Filled.Train;
-                config.ShowCloseIcon = false;
-            });
-            InvokeAsync(() => StateHasChanged());
-        }
+            config.VisibleStateDuration = 1500;
+            config.HideTransitionDuration = 500;
+            config.ShowTransitionDuration = 500;
+            config.SnackbarVariant = Variant.Filled;
+            config.Icon = Icons.Material.Filled.Train;
+            config.ShowCloseIcon = false;
+        });
+        InvokeAsync(() => StateHasChanged());
     }
+}
 
-    protected override void OnInitialized()
-    {
-        snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        messenger.OnStatusChanged += (status) => ShowStatus(status);
+protected override void OnInitialized()
+{
+    snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+    messenger.OnStatusChanged += (status) => ShowStatus(status);
 
-        base.OnInitialized();
-    }
+    base.OnInitialized();
+}
 
-    public override bool Equals(object? obj)
-    {
-        return obj != null && obj is MainLayout layout &&
-               isDarkMode == layout.isDarkMode;
-    }
+public override bool Equals(object? obj)
+{
+    return obj != null && obj is MainLayout layout &&
+           isDarkMode == layout.isDarkMode;
+}
 
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }
+public override int GetHashCode()
+{
+    return base.GetHashCode();
+}
 
-    public void Dispose()
-    {
-        messenger.OnStatusChanged -= (status) => ShowStatus(status);
-    }
+public void Dispose()
+{
+    messenger.OnStatusChanged -= (status) => ShowStatus(status);
+}
 }
 
 <div id="blazor-error-ui">

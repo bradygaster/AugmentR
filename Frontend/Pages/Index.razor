@@ -21,83 +21,83 @@
                        Color="Color.Primary"
                        DisableElevation="true" OnClick="@(async ()=> await Submit())">Send</MudButton>
             @if (_showProgress)
-            {
-                <MudProgressCircular @ref="_progress"
+        {
+            <MudProgressCircular @ref="_progress"
                                      Color="Color.Primary" Size="Size.Medium" 
                                      Indeterminate="true" Class="ml-5" />
-            }
+        }
         </MudStack>
     </MudPaper>
 </MudForm>
 
 <MudStack>
     @if(_chatHistory != null)
+{
+    @foreach (var message in _chatHistory)
     {
-        @foreach (var message in _chatHistory)
-        {
-            <MudPaper Class="pa-4 mt-4">
+        <MudPaper Class="pa-4 mt-4">
                 <MudStack Row="true">
                     @if (!message.IsUserMessage)
-                    {
-                        <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Class="mr-8">
+                {
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Class="mr-8">
                             <MudIcon Icon="@(Icons.Material.Filled.ChatBubble)" />
                         </MudAvatar>
-                    }
+                }
                     @if (message.IsUserMessage)
-                    {
-                        <MudAvatar Color="Color.Info" Variant="Variant.Filled" Class="mr-8">
+                {
+                    <MudAvatar Color="Color.Info" Variant="Variant.Filled" Class="mr-8">
                             <MudIcon Icon="@(Icons.Material.Filled.Person)" />
                         </MudAvatar>
-                    }
+                }
                     <MudText Typo="Typo.body2" Class="mb-2">@((MarkupString)Markdown.ToHtml(message.Content, _pipeline))</MudText>
                 </MudStack>
             </MudPaper>
-        }
     }
+}
 </MudStack>
 
 @code {
-    bool _showProgress = false;
-    bool success;
-    string[] errors = { };
-    string? _incomingMessage = null;
-    MudForm? form = null;
-    MudTextField<string>? _question = null;
-    MudProgressCircular? _progress = null;
-    List<ChatMessageProxy>? _chatHistory = new();
-    MarkdownPipeline _pipeline = new MarkdownPipelineBuilder()
-                                        .UseAdvancedExtensions()
-                                            .Build();
+bool _showProgress = false;
+bool success;
+string[] errors = { };
+string? _incomingMessage = null;
+MudForm? form = null;
+MudTextField<string>? _question = null;
+MudProgressCircular? _progress = null;
+List<ChatMessageProxy>? _chatHistory = new();
+MarkdownPipeline _pipeline = new MarkdownPipelineBuilder()
+                                    .UseAdvancedExtensions()
+                                        .Build();
 
-    public async Task Submit()
+public async Task Submit()
+{
+    if (success)
     {
-        if (success)
+        if (!string.IsNullOrEmpty(_incomingMessage) && _chatHistory != null)
         {
-            if (!string.IsNullOrEmpty(_incomingMessage) && _chatHistory != null)
+            _showProgress = true;
+            var tmp = _chatHistory.ToList();
+            tmp.Reverse();
+            tmp.Add(new ChatMessageProxy { IsUserMessage = true, Content = _incomingMessage });
+
+            using (var http = _httpClientFactory.CreateClient())
             {
-                _showProgress = true;
-                var tmp = _chatHistory.ToList();
-                tmp.Reverse();
-                tmp.Add(new ChatMessageProxy { IsUserMessage = true, Content = _incomingMessage });
+                http.BaseAddress = new Uri("http://backend");
+                var response = await http.PostAsJsonAsync<List<ChatMessageProxy>>("/api/chat", tmp);
+                var result = await response.Content.ReadAsStringAsync();
+                _chatHistory = JsonSerializer.Deserialize<List<ChatMessageProxy>>(result);
 
-                using (var http = _httpClientFactory.CreateClient())
-                {
-                    http.BaseAddress = new Uri("http://backend");
-                    var response = await http.PostAsJsonAsync<List<ChatMessageProxy>>("/api/chat", tmp);
-                    var result = await response.Content.ReadAsStringAsync();
-                    _chatHistory = JsonSerializer.Deserialize<List<ChatMessageProxy>>(result);
+                if(_chatHistory != null) _chatHistory.Reverse();
 
-                    if(_chatHistory != null) _chatHistory.Reverse();
-
-                    StateHasChanged();
-                }
-
-                _incomingMessage = string.Empty;
-                _showProgress = false;
-
-                if (_question != null)
-                    await _question.FocusAsync();
+                StateHasChanged();
             }
+
+            _incomingMessage = string.Empty;
+            _showProgress = false;
+
+            if (_question != null)
+                await _question.FocusAsync();
         }
     }
+}
 }
