@@ -17,41 +17,41 @@
     <MudStack Row="true">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(async ()=> { await Submit(); })">Submit</MudButton>
         @if (_showProgress)
-    {
-        <MudProgressCircular @ref="_progress" Color="Color.Primary" Size="Size.Medium" Indeterminate="true" Class="ml-5" />
-    }
+        {
+            <MudProgressCircular @ref="_progress" Color="Color.Primary" Size="Size.Medium" Indeterminate="true" Class="ml-5" />
+        }
     </MudStack>
 </MudPaper>
 
 @code {
-bool success;
-string[] errors = { };
-string? _url;
-MudForm? form;
-MudProgressCircular? _progress;
-bool _showProgress = false;
+    bool success;
+    string[] errors = { };
+    string? _url;
+    MudForm? form;
+    MudProgressCircular? _progress;
+    bool _showProgress = false;
 
-public async Task Submit()
-{
-    if (form != null)
+    public async Task Submit()
     {
-        await form.Validate();
-    }
-
-    if (success)
-    {
-        _showProgress = true;
-
-        if (!string.IsNullOrEmpty(_url))
+        if (form != null)
         {
-            var incomingQueueClient = queueServiceClient.GetQueueClient("incoming-urls");
-            await incomingQueueClient.CreateIfNotExistsAsync();
-            await incomingQueueClient.SendMessageAsync(JsonSerializer.Serialize(new IncomingUrl { Url = _url }));
-
-            _url = string.Empty;
+            await form.Validate();
         }
 
-        _showProgress = false;
+        if (success)
+        {
+            _showProgress = true;
+
+            if (!string.IsNullOrEmpty(_url))
+            {
+                var incomingQueueClient = queueServiceClient.GetQueueClient("incoming-urls");
+                await incomingQueueClient.CreateIfNotExistsAsync();
+                await incomingQueueClient.SendMessageAsync(JsonSerializer.Serialize(new IncomingUrl { Url = _url }));
+
+                _url = string.Empty;
+            }
+
+            _showProgress = false;
+        }
     }
-}
 }
