@@ -23,7 +23,7 @@
             @if (_showProgress)
             {
                 <MudProgressCircular @ref="_progress"
-                                     Color="Color.Primary" Size="Size.Medium" 
+                                     Color="Color.Primary" Size="Size.Medium"
                                      Indeterminate="true" Class="ml-5" />
             }
         </MudStack>
@@ -31,7 +31,7 @@
 </MudForm>
 
 <MudStack>
-    @if(_chatHistory != null)
+    @if (_chatHistory != null)
     {
         @foreach (var message in _chatHistory)
         {
@@ -87,7 +87,7 @@
                     var result = await response.Content.ReadAsStringAsync();
                     _chatHistory = JsonSerializer.Deserialize<List<ChatMessageProxy>>(result);
 
-                    if(_chatHistory != null) _chatHistory.Reverse();
+                    if (_chatHistory != null) _chatHistory.Reverse();
 
                     StateHasChanged();
                 }

@@ -1,20 +1,28 @@
-﻿namespace Microsoft.AspNetCore.Builder;
+﻿using Backend.Models;
 
-public static class ChatProtocolAPIExtension
+namespace Microsoft.AspNetCore.Builder;
+
+public static class ChatProtocolApiExtension
 {
     public static IEndpointRouteBuilder AddChatProtocolApis(this IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/", () =>
+        // Expose chat protocol APIs:
+        //   GET  /v1/
+        //   POST /v1/chat
+        //   POST /v1/ask
+        var v1 = builder.MapGroup("v1");
+
+        v1.MapGet("/", static () =>
         {
 
         });
 
-        builder.MapPost("chat", () =>
+        v1.MapPost("/chat", static (ChatRequest request) =>
         {
-
+            // TODO: retrun new ChatResponse();
         });
 
-        builder.MapPost("ask", () =>
+        v1.MapPost("/ask", static () =>
         { 
 
         });

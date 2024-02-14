@@ -1,32 +1,39 @@
 ﻿namespace Frontend.Services;
 
-public class LiveUpdateSubscriber(ILogger<LiveUpdateSubscriber> logger,
-        IConnectionMultiplexer redis) : IDisposable
+public sealed class LiveUpdateSubscriber(
+    ILogger<LiveUpdateSubscriber> logger,
+    IConnectionMultiplexer redis) : IAsyncDisposable
 {
-    private readonly ILogger<LiveUpdateSubscriber> logger = logger;
-    private readonly IConnectionMultiplexer redis = redis;
-
-    public async void Dispose()
+    public async ValueTask DisposeAsync()
     {
         if (redis != null && redis.IsConnected)
         {
             var subscriber = redis.GetSubscriber();
-            await subscriber.UnsubscribeAsync(new RedisChannel(nameof(Status),
-                               RedisChannel.PatternMode.Auto));
-            redis.Dispose();
+
+            await subscriber.UnsubscribeAsync(
+                new RedisChannel(nameof(Status),
+                RedisChannel.PatternMode.Auto));
+
+            await redis.DisposeAsync();
         }
     }
 
-    public async Task SubscribeAsync(CancellationToken cancellationToken, Action<Status> action)
+    public async Task SubscribeAsync(Action<Status?> action, CancellationToken cancellationToken)
     {
         var subscriber = redis.GetSubscriber();
-        await subscriber.SubscribeAsync(new RedisChannel(nameof(Status),
-                RedisChannel.PatternMode.Auto), (ch, value) =>
+
+        await subscriber.SubscribeAsync(
+            channel: new RedisChannel(nameof(Status), RedisChannel.PatternMode.Auto),
+            handler: (ch, value) =>
+            {
+                if (value.HasValue is false)
                 {
-#pragma warning disable CS8604 // Possible null reference argument.
-                    var obj = JsonSerializer.Deserialize<Status>(value);
-                    action(obj);
-#pragma warning restore CS8604 // Possible null reference argument.
-                });
+                    return;
+                }
+
+                var status = JsonSerializer.Deserialize<Status>(value.ToString());
+                
+                action.Invoke(status);
+            });
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Backend.Augmentors;
 
-public class UrlListAugmentor(SemanticKernelWrapper semanticKernelWrapper,
+public class UrlListAugmentor(
+    SemanticKernelWrapper semanticKernelWrapper,
     ILogger<UrlListAugmentor> logger,
     BlobServiceClient blobServiceClient,
     QueueServiceClient queueServiceClient,
@@ -8,10 +9,6 @@ public class UrlListAugmentor(SemanticKernelWrapper semanticKernelWrapper,
     LiveUpdateService liveUpdateService)
         : AzureBlobBaseAugmentor(semanticKernelWrapper, logger, blobServiceClient)
 {
-    private readonly QueueServiceClient queueServiceClient = queueServiceClient;
-    private readonly HistoryApiClient historyApiClient = historyApiClient;
-    private readonly LiveUpdateService liveUpdateService = liveUpdateService;
-
     public override async Task Load()
     {
         var incomingContainerClient = blobServiceClient.GetBlobContainerClient("incoming-urllist");

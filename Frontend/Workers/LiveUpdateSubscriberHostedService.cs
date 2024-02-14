@@ -1,22 +1,29 @@
-﻿
-namespace Frontend.Workers;
+﻿namespace Frontend.Workers;
 
-public class LiveUpdateSubscriberHostedService(ILogger<LiveUpdateSubscriberHostedService> logger,
-        LiveUpdateSubscriber subscriber,
-        LiveUpdateFrontEndMessenger messenger) : IHostedService
+public class LiveUpdateSubscriberHostedService(
+    ILogger<LiveUpdateSubscriberHostedService> logger,
+    LiveUpdateSubscriber subscriber,
+    LiveUpdateFrontEndMessenger messenger) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await subscriber.SubscribeAsync(cancellationToken, (status) =>
+        await subscriber.SubscribeAsync((status) =>
         {
-            logger.LogInformation($"Status at {status.LastUpdated}: {status.Summary}");
+            if (status is null)
+            {
+                logger.LogWarning("Status is null");
+                return;
+            }
+
+            logger.LogInformation("Status at {LastUpdated}: {Summary}", 
+                status.LastUpdated, status.Summary);
+
             messenger.Notify(status);
-        });
+        }, cancellationToken);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        subscriber.Dispose();
-        return Task.CompletedTask;
+        await subscriber.DisposeAsync();
     }
 }
