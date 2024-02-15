@@ -16,6 +16,14 @@ param openAIKeyName string = 'AZURE-OPEN-AI-KEY'
 @description('Name of the openai key secret in the keyvault')
 param openAIName string
 
+@description('Whether the deployment is running on GitHub Actions')
+param runningOnGh string = ''
+ 
+@description('Whether the deployment is running on Azure DevOps Pipeline')
+param runningOnAdo string = ''
+
+var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User': 'ServicePrincipal'
+
 var resourceToken = uniqueString(resourceGroup().id)
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
@@ -177,7 +185,7 @@ module blobRoleAssignmentForMe 'core/security/role.bicep' = {
     name: 'blob-role-user'
     params: {
         roleDefinitionId: strgBlbRole
-        principalType: 'User'
+        principalType: principalType
         principalId: principalId
     }
 }
@@ -196,7 +204,7 @@ module queueRoleAssignmentForMe 'core/security/role.bicep' = {
     name: 'queue-role-user'
     params: {
         roleDefinitionId: strgQueRole
-        principalType: 'User'
+        principalType: principalType
         principalId: principalId
     }
 }
