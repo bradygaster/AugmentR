@@ -22,11 +22,6 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
-  provision:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
 
