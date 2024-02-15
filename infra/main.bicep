@@ -15,6 +15,12 @@ param principalId string = ''
 @description('Name of the openai key secret in the keyvault')
 param openAIKeyName string = 'AZURE-OPEN-AI-KEY'
 
+@description('Whether the deployment is running on GitHub Actions')
+param runningOnGh string = ''
+ 
+@description('Whether the deployment is running on Azure DevOps Pipeline')
+param runningOnAdo string = ''
+
 var tags = {
   'azd-env-name': environmentName
 }
@@ -55,6 +61,8 @@ module resources 'resources.bicep' = {
       keyvaultName: keyvault.outputs.AZURE_KEY_VAULT_NAME
       openAIKeyName: openAIKeyName
       openAIName: ai.outputs.AZURE_OPENAI_NAME
+      runningOnAdo: runningOnAdo
+      runningOnGh: runningOnGh
   }
 }
 
