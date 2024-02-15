@@ -24,7 +24,7 @@ jobs:
         uses: Azure/setup-azd@v0.1.0
 
   build:
-
+    needs: setup
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +32,7 @@ jobs:
         run: dotnet build --no-restore
 
   provision:
-
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
