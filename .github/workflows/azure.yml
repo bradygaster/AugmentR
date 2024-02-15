@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install azd
+        uses: Azure/setup-azd@v0.1.0
+
       - name: Azure Dev Provision
         run: azd provision --no-prompt
         env:
