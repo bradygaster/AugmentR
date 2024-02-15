@@ -1,4 +1,4 @@
-name: Provision
+﻿name: Provision
 
 on:
   workflow_dispatch:
@@ -22,17 +22,30 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.102
+
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Install workload
         run: dotnet workload install aspire
+
       - name: Restore dependencies
         run: dotnet restore
+
       - name: Build
         run: dotnet build --no-restore
 
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
+
+      - name: 🔑 Log in with Azure (Federated Credentials)
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        run: |
+          azd auth login `
+            --client-id "$Env:AZURE_CLIENT_ID" `
+            --federated-credential-provider "github" `
+            --tenant-id "$Env:AZURE_TENANT_ID"
+        shell: pwsh
 
       - name: Azure Provision
         run: azd provision --no-prompt --environment ${{ vars.AZURE_ENV_NAME }}
