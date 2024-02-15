@@ -1,17 +1,7 @@
 {
   "resources": {
     "pubsub": {
-      "type": "container.v0",
-      "image": "redis:latest",
-      "bindings": {
-        "tcp": {
-          "scheme": "tcp",
-          "protocol": "tcp",
-          "transport": "tcp",
-          "containerPort": 6379
-        }
-      },
-      "connectionString": "{pubsub.bindings.tcp.host}:{pubsub.bindings.tcp.port}"
+      "type": "redis.v0"
     },
     "qdrant": {
       "type": "container.v0",
@@ -26,33 +16,7 @@
       }
     },
     "postgres": {
-      "type": "container.v0",
-      "image": "postgres:latest",
-      "env": {
-        "POSTGRES_HOST_AUTH_METHOD": "scram-sha-256",
-        "POSTGRES_INITDB_ARGS": "--auth-host=scram-sha-256 --auth-local=scram-sha-256",
-        "POSTGRES_PASSWORD": "{postgres.inputs.password}"
-      },
-      "bindings": {
-        "tcp": {
-          "scheme": "tcp",
-          "protocol": "tcp",
-          "transport": "tcp",
-          "containerPort": 5432
-        }
-      },
-      "connectionString": "Host={postgres.bindings.tcp.host};Port={postgres.bindings.tcp.port};Username=postgres;Password={postgres.inputs.password};",
-      "inputs": {
-        "password": {
-          "type": "string",
-          "secret": true,
-          "default": {
-            "generate": {
-              "minLength": 10
-            }
-          }
-        }
-      }
+      "type": "postgres.server.v0"
     },
     "historydb": {
       "type": "postgres.database.v0",

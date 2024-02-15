@@ -80,8 +80,8 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' 
   tags: tags
 }
 
-resource historydb 'Microsoft.App/containerApps@2023-05-02-preview' = {
-  name: 'historydb'
+resource postgres 'Microsoft.App/containerApps@2023-05-02-preview' = {
+  name: 'postgres'
   location: location
   properties: {
     environmentId: containerAppEnvironment.id
