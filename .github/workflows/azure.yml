@@ -16,8 +16,5 @@ jobs:
         uses: Azure/setup-azd@v0.1.0
 
       - name: Azure Dev Provision
-        run: azd provision --no-prompt
-        env:
-          AZURE_ENV_NAME: ${{ secrets.AZURE_ENV_NAME }} # from azd pipeline config
-          AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }} # from azd pipeline config
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }} # from azd pipeline config
+        run: azd provision --no-prompt --env-name ${{ secrets.AZURE_ENV_NAME }} --location ${{ secrets.AZURE_LOCATION }} --subscription-id ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
