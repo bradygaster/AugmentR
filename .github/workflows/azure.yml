@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+
+  setup:
 
     runs-on: ubuntu-latest
 
@@ -19,12 +20,23 @@ jobs:
         run: dotnet workload install aspire
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
-
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
 
-      - name: Azure Dev Provision
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build
+        run: dotnet build --no-restore
+
+  provision:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Azure Provision
         run: azd provision --no-prompt --environment ${{ vars.AZURE_ENV_NAME }}
 
