@@ -41,7 +41,7 @@ jobs:
           azd auth login `
             --client-id "$Env:AZURE_CLIENT_ID" `
             --federated-credential-provider "github" `
-            --tenant-id "$Env:AZURE_TENANT_ID"
+            --tenant-id "$Env:AZURE_TENANT_ID" --debug
         shell: pwsh
 
       - name: Provision Infrastructure
