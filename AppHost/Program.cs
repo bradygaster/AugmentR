@@ -4,9 +4,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 var pubsub  = // a redis container the app will use for simple messaging to the frontend
     builder.AddRedis("pubsub");
 
-var qdrant  = // the qdrant container the app will use for vector search
+var qdrant = // the qdrant container the app will use for vector search
     builder.AddContainer("qdrant", "qdrant/qdrant")
-           .WithServiceBinding(containerPort: 6333, name: "qdrant", scheme: "http");
+           .WithEndpoint(hostPort: 6333, name: "qdrant", scheme: "http");
 
 var histdb  = // a postgres container the app will use for history storage
     builder.AddPostgres("postgres")
@@ -34,17 +34,11 @@ var queues =  // a queue in the storage account
 var backend = // the main .net app that will perform augmentation and vector search
     builder.AddProject<Projects.Backend>("backend")
            .WithEnvironment("QDRANT_ENDPOINT", qdrant.GetEndpoint("qdrant"))
-           .WithReference(histsvc)
-           .WithReference(pubsub)
-           .WithReference(blobs)
-           .WithReference(queues);
+           .WithReference(histsvc).WithReference(pubsub).WithReference(blobs).WithReference(queues);
 
 _ =           // a blazor server app that will provide a web ui for the app
     builder.AddProject<Projects.Frontend>("frontend")
-           .WithReference(histsvc)
-           .WithReference(backend)
-           .WithReference(pubsub)
-           .WithReference(queues);
+           .WithReference(histsvc).WithReference(backend).WithReference(pubsub).WithReference(queues);
 
 builder.Build().Run();
 

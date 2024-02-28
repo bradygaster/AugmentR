@@ -11,6 +11,9 @@
       "principalId": {
           "value": "${AZURE_PRINCIPAL_ID}"
       },
+      "isInLocalDevMode": {
+          "value": "true"
+      },  
       "runningOnGh": {
         "value": "${GITHUB_ACTIONS}"
       },

@@ -7,6 +7,12 @@ param tags object = {}
 @description('String representing the ID of the logged-in user ')
 param principalId string = ''
 
+@description('String representing the name of the KeyVault Key representing the Azure OpenAI API Key secret')
+param openAIKeyName string = ''
+
+@description('String representing the name of the Azure OpenAI resource')
+param openAIName string = ''
+
 var resourceToken = uniqueString(resourceGroup().id)
 
 // create a keyvault to store openai secrets
@@ -18,6 +24,16 @@ module keyvault 'core/security/keyvault.bicep' = {
         location: location
         tags: tags
         principalId: principalId
+    }
+}
+
+// create secret to store openai api key
+module openAIKey 'core/security/keyvault-secret.bicep' = {
+    name: 'openai-key'
+    params: {
+        name: openAIKeyName
+        keyVaultName: keyvault.name
+        secretValue: listKeys(resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.CognitiveServices/accounts', openAIName), '2023-05-01').key1
     }
 }
 

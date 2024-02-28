@@ -9,11 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # uncomment these to use federated
-      # AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
-      # AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-
-      # uncomment this to use client credentials
+      
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
     steps:
@@ -67,6 +63,7 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
 
       - name: Deploy App
         run: azd deploy --no-prompt
@@ -74,3 +71,4 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
