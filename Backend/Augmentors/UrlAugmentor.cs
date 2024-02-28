@@ -10,10 +10,12 @@ public class UrlAugmentor(SemanticKernelWrapper semanticKernelWrapper,
     private readonly HistoryApiClient historyApiClient = historyApiClient;
     private readonly LiveUpdateService liveUpdateService = liveUpdateService;
 
+    public override async Task OnStarted() =>
+        await queueServiceClient.GetQueueClient("incoming-urls").CreateIfNotExistsAsync();
+
     public override async Task Load()
     {
         var incomingQueueClient = queueServiceClient.GetQueueClient("incoming-urls");
-        await incomingQueueClient.CreateIfNotExistsAsync();
 
         QueueMessage[] messages = await incomingQueueClient.ReceiveMessagesAsync(maxMessages: 8);
 

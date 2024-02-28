@@ -6,4 +6,5 @@ public abstract class BaseAugmentor(SemanticKernelWrapper semanticKernelWrapper,
     protected ILogger<BaseAugmentor> logger = logger;
 
     public abstract Task Load();
+    public virtual Task OnStarted() => Task.CompletedTask;
 }

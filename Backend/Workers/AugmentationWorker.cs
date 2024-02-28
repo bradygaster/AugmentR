@@ -36,4 +36,10 @@ public class AugmentationWorker(
             await liveUpdateService.ShowSystemUpdate("System is up");
         }
     }
+
+    public override async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await urlAugmentor.OnStarted();
+        await urlListAugmentor.OnStarted();
+    }
 }

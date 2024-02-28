@@ -9,10 +9,12 @@ public class UrlListAugmentor(
     LiveUpdateService liveUpdateService)
         : AzureBlobBaseAugmentor(semanticKernelWrapper, logger, blobServiceClient)
 {
+    public override async Task OnStarted() =>
+        await blobServiceClient.GetBlobContainerClient("incoming-urllist").CreateIfNotExistsAsync();
+
     public override async Task Load()
     {
         var incomingContainerClient = blobServiceClient.GetBlobContainerClient("incoming-urllist");
-        await incomingContainerClient.CreateIfNotExistsAsync();
 
         var archivedContainerClient = blobServiceClient.GetBlobContainerClient("archive-urllist");
         await archivedContainerClient.CreateIfNotExistsAsync();
