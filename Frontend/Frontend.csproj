@@ -5,8 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<SelfContained>True</SelfContained>
-    <UserSecretsId>cf44a86e-6145-4059-8aab-4967a5e9d0f2</UserSecretsId>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MudBlazor" />
