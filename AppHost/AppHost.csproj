@@ -17,8 +17,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Backend\Backend.csproj" />
 		<ProjectReference Include="..\Frontend\Frontend.csproj" />
-		<ProjectReference Include="..\HistoryDb\HistoryDb.csproj" />
-		<ProjectReference Include="..\HistoryService\HistoryService.csproj" />
 	</ItemGroup>
 
 </Project>
