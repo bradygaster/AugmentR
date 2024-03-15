@@ -4,7 +4,6 @@ builder.AddServiceDefaults();
 builder.AddAzureQueueClient("AzureQueues");
 builder.AddAzureBlobClient("AzureBlobs");
 builder.AddRedisClient("pubsub");
-builder.Services.AddHttpClient<HistoryApiClient>(client => client.BaseAddress = new ("http://historyservice"));
 builder.Services.AddSingleton<SemanticKernelWrapper>();
 builder.Services.AddSingleton<UrlAugmentor>();
 builder.Services.AddSingleton<UrlListAugmentor>();
