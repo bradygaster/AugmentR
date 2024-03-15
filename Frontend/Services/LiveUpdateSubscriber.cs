@@ -1,7 +1,6 @@
 ﻿namespace Frontend.Services;
 
 public sealed class LiveUpdateSubscriber(
-    ILogger<LiveUpdateSubscriber> logger,
     IConnectionMultiplexer redis) : IAsyncDisposable
 {
     public async ValueTask DisposeAsync()

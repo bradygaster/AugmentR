@@ -1,14 +1,18 @@
-﻿namespace Backend.Augmentors;
+﻿using Azure.AI.OpenAI;
+
+namespace Backend.Augmentors;
 
 public class UrlAugmentor(SemanticKernelWrapper semanticKernelWrapper,
     ILogger<UrlAugmentor> logger,
     QueueServiceClient queueServiceClient,
     HistoryApiClient historyApiClient,
-    LiveUpdateService liveUpdateService)
+    LiveUpdateService liveUpdateService,
+    OpenAIClient openAiClient)
         : AzureQueueBaseAugmentor(semanticKernelWrapper, logger, queueServiceClient)
 {
     private readonly HistoryApiClient historyApiClient = historyApiClient;
     private readonly LiveUpdateService liveUpdateService = liveUpdateService;
+    private readonly OpenAIClient openAiClient = openAiClient;
 
     public override async Task OnStarted() =>
         await queueServiceClient.GetQueueClient("incoming-urls").CreateIfNotExistsAsync();

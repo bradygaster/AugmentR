@@ -1,9 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddAzureQueueService("AzureQueues");
-builder.AddAzureBlobService("AzureBlobs");
-builder.AddRedis("pubsub");
+builder.AddAzureQueueClient("AzureQueues");
+builder.AddAzureBlobClient("AzureBlobs");
+builder.AddRedisClient("pubsub");
 builder.Services.AddHttpClient<HistoryApiClient>(client => client.BaseAddress = new ("http://historyservice"));
 builder.Services.AddSingleton<SemanticKernelWrapper>();
 builder.Services.AddSingleton<UrlAugmentor>();

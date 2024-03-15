@@ -3,7 +3,6 @@
 public class AugmentationWorker(
     SemanticKernelWrapper semanticKernelClient,
     ILogger<AugmentationWorker> logger,
-    IConfiguration configuration,
     UrlAugmentor urlAugmentor,
     UrlListAugmentor urlListAugmentor,
     LiveUpdateService liveUpdateService) : BackgroundService

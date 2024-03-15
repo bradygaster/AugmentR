@@ -1,7 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
-builder.AddAzureQueueService("AzureQueues");
-builder.AddRedis("pubsub");
+builder.AddAzureOpenAIClient("openai");
+builder.AddAzureQueueClient("AzureQueues");
+builder.AddRedisClient("pubsub");
 builder.Services.AddSingleton<LiveUpdateSubscriber>();
 builder.Services.AddSingleton<LiveUpdateFrontEndMessenger>();
 builder.Services.AddHostedService<LiveUpdateSubscriberHostedService>();

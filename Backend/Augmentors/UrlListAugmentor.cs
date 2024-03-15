@@ -5,7 +5,6 @@ public class UrlListAugmentor(
     ILogger<UrlListAugmentor> logger,
     BlobServiceClient blobServiceClient,
     QueueServiceClient queueServiceClient,
-    HistoryApiClient historyApiClient,
     LiveUpdateService liveUpdateService)
         : AzureBlobBaseAugmentor(semanticKernelWrapper, logger, blobServiceClient)
 {

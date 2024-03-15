@@ -1,8 +1,6 @@
 ﻿namespace Backend.Services;
 
-public class LiveUpdateService(
-    ILogger<LiveUpdateService> logger,
-    IConnectionMultiplexer redis)
+public class LiveUpdateService(IConnectionMultiplexer redis)
 {
     private readonly ISubscriber subscriber = redis.GetSubscriber();
 
